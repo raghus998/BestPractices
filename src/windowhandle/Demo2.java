@@ -1,0 +1,40 @@
+package windowhandle;
+
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class Demo2 
+{
+	static 
+	{
+		System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
+	}
+	public static void main(String[] args) throws InterruptedException {
+		WebDriver driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.get("http://seleniumpractise.blogspot.com/2017/07/multiple-window-examples.html");
+		String parent = driver.getWindowHandle();
+		System.out.println("Parent window name :"+driver.getTitle());
+		driver.findElement(By.xpath("//a[@href='http://www.google.com']")).click();
+		driver.findElement(By.xpath("//div[@id='post-body-6170641642826198246']//a[2]")).click();
+		driver.findElement(By.xpath(" //div[@id='post-body-6170641642826198246']//a[3]")).click();
+		Set<String> alltabs = driver.getWindowHandles();
+		System.out.println("Total no of tabs is :"+alltabs.size());
+		System.out.println("Title of the child tabs are.....");
+		for (String tab : alltabs)
+		{
+			if (!parent.equals(tab)) 
+			{
+				driver.switchTo().window(tab);
+				System.out.println("Title of the child tab is :"+driver.getTitle());
+				driver.close();
+			}
+		}
+		driver.close();
+	}
+}
